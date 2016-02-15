@@ -19,7 +19,7 @@ public class MyService extends Service {
     private DownloadBinder mBinder = new DownloadBinder();
     class DownloadBinder extends Binder {
         @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-        public void startDownload() {
+        public void startDownload(int para1) {
             Log.d("MyService", "startDownload executed");
             Intent notificationIntent = new Intent(MyService.this, MainActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(MyService.this, 0,
@@ -33,7 +33,7 @@ public class MyService extends Service {
             builder.setContentIntent(pendingIntent);
             builder.setOngoing(true);
             builder.setSubText("Update subtext...");   //API level 16
-            builder.setNumber(100);
+            builder.setNumber(para1);
             builder.build();
             notification = builder.build();
             notificationManager = (NotificationManager) getApplicationContext()
@@ -107,5 +107,12 @@ public class MyService extends Service {
                 .getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
 
         notificationManager.cancelAll();
+        // TODO Auto-generated method stub
+        //clockOut();
+        Intent i = new Intent("checkout");
+        // Data you need to pass to activity
+        i.putExtra("action", "checkout_action");
+        i.putExtra("msg", "send to activity!");
+        getApplicationContext().sendBroadcast(i);
     }
 }

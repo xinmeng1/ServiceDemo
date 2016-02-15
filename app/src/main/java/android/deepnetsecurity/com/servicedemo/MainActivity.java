@@ -1,13 +1,18 @@
 package android.deepnetsecurity.com.servicedemo;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -27,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             downloadBinder = (MyService.DownloadBinder) service;
-            downloadBinder.startDownload();
+            downloadBinder.startDownload(3);
             downloadBinder.getProgress();
         }
 
@@ -48,6 +53,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         unbindService = (Button) findViewById(R.id.unbind_service);
         bindService.setOnClickListener(this);
         unbindService.setOnClickListener(this);
+
+
+
+
+        // Add this inside your class
+        BroadcastReceiver broadcastReceiver =  new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                Bundle b = intent.getExtras();
+
+                String message = b.getString("action");
+
+                Log.i("Test", "action: " + message);
+                assert message != null;
+                if (message.equals("checkout_action")) {
+                    Log.i("Test", "action: " + message);
+                    String msg = b.getString("msg");
+                    Toast toast = Toast.makeText(context, msg, Toast.LENGTH_LONG);
+                    toast.show();
+                }
+            }
+        };
+        // Inside OnCreate Method
+        registerReceiver(broadcastReceiver, new IntentFilter("checkout"));
     }
 
     @Override
