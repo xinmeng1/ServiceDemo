@@ -40,6 +40,7 @@ public class MyService extends Service {
                     .getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
 
             notificationManager.notify(1, notification);
+
         }
         public int getProgress() {
             Log.d("MyService", "getProgress executed");

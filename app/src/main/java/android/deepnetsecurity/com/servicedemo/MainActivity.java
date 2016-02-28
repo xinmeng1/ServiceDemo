@@ -13,6 +13,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+import com.logentries.logger.AndroidLogger;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -24,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button bindService;
     private Button unbindService;
     private MyService.DownloadBinder downloadBinder;
-
+    AndroidLogger logger = null;
     private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceDisconnected(ComponentName name) {
@@ -54,7 +57,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bindService.setOnClickListener(this);
         unbindService.setOnClickListener(this);
 
-
+        try {
+            logger = AndroidLogger.createInstance(this,
+                    false, false, false, null, 0, "64a28ed6-6c15-49e5-860e-dd59d172238a", false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        logger.log("Welcome First Load the app to TEST!");
 
 
         // Add this inside your class
@@ -96,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.bind_service:
                 Intent bindIntent = new Intent(this, MyService.class);
                 bindService(bindIntent, connection, BIND_AUTO_CREATE); // 绑定服务
+                unbindService(connection); // 解绑服务
                 break;
             case R.id.unbind_service:
                 unbindService(connection); // 解绑服务
