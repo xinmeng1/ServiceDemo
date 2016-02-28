@@ -11,7 +11,11 @@ import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.logentries.logger.AndroidLogger;
+
 public class MyService extends Service {
+
+    AndroidLogger logger = null;
     public MyService() {
     }
     Notification notification;
@@ -20,6 +24,7 @@ public class MyService extends Service {
     class DownloadBinder extends Binder {
         @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
         public void startDownload(int para1) {
+            logger.log("startDownload");
             Log.d("MyService", "startDownload executed");
             Intent notificationIntent = new Intent(MyService.this, MainActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(MyService.this, 0,
@@ -40,7 +45,6 @@ public class MyService extends Service {
                     .getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
 
             notificationManager.notify(1, notification);
-
         }
         public int getProgress() {
             Log.d("MyService", "getProgress executed");
@@ -74,6 +78,15 @@ public class MyService extends Service {
         //notification.setLatestEventInfo(this, "This is title", "This is content", pendingIntent);
         //startForeground(1, notification);
 
+        //Service to send log
+/*        try {
+            logger = AndroidLogger.createInstance(getApplicationContext(),
+                    true, false, false, null, 0, "64a28ed6-6c15-49e5-860e-dd59d172238a", false);
+        } catch (IOException | IllegalArgumentException e) {
+            e.printStackTrace();
+        }*/
+        logger = LogentriesUtil.createLogger();
+
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
                 notificationIntent, 0);
@@ -91,13 +104,15 @@ public class MyService extends Service {
 
         notification = builder.build();
         startForeground(1, notification);
-
+        logger.log("onCreate");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("MyService", "onStartCommand executed");
+        logger.log("onStartCommand");
         return super.onStartCommand(intent, flags, startId);
+
     }
 
     @Override

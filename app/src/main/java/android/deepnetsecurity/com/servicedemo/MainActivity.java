@@ -13,9 +13,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-import com.logentries.logger.AndroidLogger;
 
-import java.io.IOException;
+import com.logentries.logger.AndroidLogger;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -57,12 +56,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bindService.setOnClickListener(this);
         unbindService.setOnClickListener(this);
 
-        try {
-            logger = AndroidLogger.createInstance(this,
-                    false, false, false, null, 0, "64a28ed6-6c15-49e5-860e-dd59d172238a", false);
+/*        try {
+            logger = AndroidLogger.createInstance(getApplicationContext(),
+                    true, false, false, null, 0, "64a28ed6-6c15-49e5-860e-dd59d172238a", false);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
+        logger = LogentriesUtil.createLogger();
+        assert logger != null;
         logger.log("Welcome First Load the app to TEST!");
 
 
